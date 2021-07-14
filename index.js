@@ -1,6 +1,13 @@
-function LocalFileData(path) {
+function LocalFileData(path, limitBytes) {
   this.arrayBuffer = (() => {
-    var buffer = require('fs').readFileSync(path);
+    var buffer;
+    var fs = require('fs');
+    if (limitBytes) {
+      buffer = new Buffer(limitBytes);
+      fs.readSync(fs.openSync(path, "r"), buffer, 0, limitBytes);
+    } else {
+      buffer = fs.readFileSync(path);
+    }
     var arrayBuffer = buffer.slice(buffer.byteOffset, buffer.byteOffset + buffer.byteLength);
     return [arrayBuffer];
   })();

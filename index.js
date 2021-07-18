@@ -1,10 +1,12 @@
-function LocalFileData(path, limitBytes) {
+function LocalFileData(path, limitBytes, knownType) {
   this.arrayBuffer = (() => {
     var buffer;
-    var fs = require('fs');
+    const fs = require('fs');
     if (limitBytes) {
       buffer = new Buffer(limitBytes);
-      fs.readSync(fs.openSync(path, "r"), buffer, 0, limitBytes);
+      const fileID = fs.openSync(path, "r");
+      fs.readSync(fileID, buffer, 0, limitBytes);
+      fs.closeSync(fileID);
     } else {
       buffer = fs.readFileSync(path);
     }
@@ -14,7 +16,7 @@ function LocalFileData(path, limitBytes) {
 
   this.name = require('path').basename(path);
 
-  this.type = require('mime-types').lookup(require('path').extname(path)) || undefined;
+  this.type = knownType || require('mime-types').lookup(require('path').extname(path)) || undefined;
 }
 
 function constructFileFromLocalFileData(localFileData) {

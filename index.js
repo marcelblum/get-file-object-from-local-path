@@ -3,7 +3,7 @@ function LocalFileData(path, limitBytes, knownType) {
     var buffer;
     const fs = require('fs');
     if (limitBytes) {
-      buffer = new Buffer(limitBytes);
+      buffer = Buffer.alloc(limitBytes);
       const fileID = fs.openSync(path, "r");
       fs.readSync(fileID, buffer, 0, limitBytes);
       fs.closeSync(fileID);
